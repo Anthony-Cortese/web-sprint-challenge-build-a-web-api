@@ -21,7 +21,7 @@ router.get("/:id", validateProjectId, (req, res) => {
   res.status(200).json(req.project);
 });
 
-router.post("/", validateProject, (req, res, next) => {
+router.post("/", validateProject, (req, res) => {
   Project.insert(req.body)
     .then((newProject) => {
       res.status(201).json(newProject);
@@ -31,7 +31,7 @@ router.post("/", validateProject, (req, res, next) => {
     });
 });
 
-router.put("/:id", validateProject, validateProjectId, (req, res, next) => {
+router.put("/:id", validateProject, validateProjectId, (req, res) => {
   Project.update(req.params.id, req.body)
     .then((thisUpdated) => {
       res.status(201).json(thisUpdated);
@@ -41,7 +41,7 @@ router.put("/:id", validateProject, validateProjectId, (req, res, next) => {
     });
 });
 
-router.delete("/:id", validateProjectId, (req, res, next) => {
+router.delete("/:id", validateProjectId, (req, res) => {
   Project.remove(req.params.id)
     .then((deletedProjects) => {
       res.status(204).json(deletedProjects);
@@ -51,10 +51,10 @@ router.delete("/:id", validateProjectId, (req, res, next) => {
     });
 });
 
-router.get("/:id/actions", validateProjectId, async (req, res, next) => {
+router.get("/:id/actions", validateProjectId, async (req, res) => {
   Project.getProjectActions(req.params.id)
     .then((projectActions) => {
-      res.status(204).json(projectActions);
+      res.status(200).json(projectActions);
     })
     .catch((err) => {
       res.status(500).json({ message: err });
