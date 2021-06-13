@@ -1,6 +1,9 @@
 const express = require("express");
 const Project = require("./projects-model");
-const { validateProjectId } = require("../middleware/middleware");
+const {
+  validateProjectId,
+  validateProject,
+} = require("../middleware/middleware");
 
 const router = express.Router();
 
@@ -17,3 +20,45 @@ router.get("/", (req, res) => {
 router.get("/:id", validateProjectId, (req, res) => {
   res.status(200).json(req.project);
 });
+
+router.post("/", validateProject, (req, res, next) => {
+  Project.insert(req.body)
+    .then((newProject) => {
+      res.status(201).json(newProject);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err });
+    });
+});
+
+router.put("/:id", validateProject, validateProjectId, (req, res, next) => {
+  Project.update(req.params.id, req.body)
+    .then((thisUpdated) => {
+      res.status(201).json(thisUpdated);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err });
+    });
+});
+
+router.delete("/:id", validateProjectId, (req, res, next) => {
+  Project.remove(req.params.id)
+    .then((deletedProjects) => {
+      res.status(204).json(deletedProjects);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err });
+    });
+});
+
+router.get("/:id/actions", validateProjectId, async (req, res, next) => {
+  Project.getProjectActions(req.params.id)
+    .then((projectActions) => {
+      res.status(204).json(projectActions);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err });
+    });
+});
+
+module.exports = router;
